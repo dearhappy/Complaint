@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Worker Issue Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .file-upload-wrapper { border: 2px dashed #cbd5e1; transition: all 0.3s ease; }
+        .file-upload-wrapper.active { border-color: #3b82f6; background-color: #eff6ff; }
+        
+        .loader {
+            border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #3b82f6;
+            width: 24px; height: 24px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-slate-100">
+
+    <div class="w-full max-w-lg glass-panel rounded-2xl overflow-hidden fade-in shadow-2xl">
+        
+        <!-- Header -->
+        <div class="bg-slate-900 text-white p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <i class="fa-solid fa-hard-hat text-6xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight">Report an Issue</h1>
+            <p class="text-slate-400 text-sm mt-1">Submit complaints & receive instant proof.</p>
+        </div>
+
+        <!-- Form -->
+        <form id="reportForm" class="p-6 space-y-5">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 uppercase">Worker ID</label>
+                    <input type="text" id="workerId" required placeholder="W-102" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold text-slate-500 uppercase">Your Name</label>
+                    <input type="text" id="name" required placeholder="Full Name" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 uppercase">Issue Category</label>
+                <div class="relative">
+                    <select id="category" required class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 appearance-none bg-white">
+                        <option value="" disabled selected>Select a category...</option>
+                        <option value="Safety Hazard">⚠️ Safety Hazard</option>
+                        <option value="Equipment Failure">⚙️ Equipment Failure</option>
+                        <option value="Payroll/Attendance">💰 Payroll / Attendance</option>
+                        <option value="Interpersonal Conflict">👥 Interpersonal Conflict</option>
+                        <option value="Other">📝 Other</option>
+                    </select>
+                    <div class="absolute right-4 top-3.5 text-slate-400 pointer-events-none"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 uppercase">Description</label>
+                <textarea id="description" required rows="3" placeholder="Describe the issue..." class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 resize-none"></textarea>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-semibold text-slate-500 uppercase">Photo Evidence</label>
+                <div class="file-upload-wrapper rounded-lg p-6 text-center cursor-pointer relative" id="dropZone">
+                    <input type="file" id="photo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div id="uploadPlaceholder">
+                        <i class="fa-solid fa-camera text-2xl text-slate-300 mb-2"></i>
+                        <p class="text-sm text-slate-500">Tap to upload proof</p>
+                    </div>
+                    <div id="previewContainer" class="hidden flex-col items-center">
+                        <img id="imagePreview" class="h-24 rounded-lg shadow-sm object-cover mb-2" src="" alt="Preview">
+                        <button type="button" id="removeBtn" class="text-xs text-red-500 font-bold z-20 relative">REMOVE</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-lg shadow-lg flex items-center justify-center gap-2 transition-all">
+                <span>Submit Report</span> <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden p-6 bg-white h-full flex flex-col items-center text-center">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                <i class="fa-solid fa-check text-green-600"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800 mb-1">Complaint Lodged</h2>
+            <p class="text-slate-500 text-sm mb-4">Save this receipt as proof.</p>
+            
+            <!-- Receipt Container -->
+            <div class="mb-4 shadow-lg border border-slate-200 rounded-lg overflow-hidden w-full max-w-xs">
+                 <img id="generatedReceipt" class="w-full h-auto block" alt="Complaint Receipt">
+            </div>
+
+            <a id="downloadLink" href="#" download="Complaint-Receipt.jpg" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow mb-3 block">
+                Download Receipt <i class="fa-solid fa-download ml-2"></i>
+            </a>
+            
+            <button onclick="location.reload()" class="text-slate-500 text-sm font-semibold hover:text-slate-700">Submit Another Issue</button>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for Image Generation -->
+    <canvas id="receiptCanvas" width="600" height="800" style="display:none;"></canvas>
+
+    <script>
+        // ============================================
+        // 🚀 PASTE YOUR APP SCRIPT URL HERE
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1EoUXBnVLpj_y_Zboyfo5Y-QzTR2YlOVN_HaSIjJMYgyDLAXPzRqg7Pqo8ax5mX_reA/exec"; 
+        // ============================================
+
+        const form = document.getElementById('reportForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const photoInput = document.getElementById('photo');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        let base64Image = "";
+        let fileName = "";
+
+        // File Handling
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if(file.size > 5 * 1024 * 1024) { alert("Image too large (Max 5MB)"); return; }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    base64Image = event.target.result;
+                    fileName = file.name;
+                    imagePreview.src = base64Image;
+                    document.getElementById('uploadPlaceholder').classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+                    previewContainer.classList.add('flex');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('removeBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            photoInput.value = ""; base64Image = "";
+            document.getElementById('uploadPlaceholder').classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+            previewContainer.classList.remove('flex');
+        });
+
+        // Submit Logic
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!WEB_APP_URL || WEB_APP_URL.includes("YOUR_DEPLOYED")) { alert("Please configure the Web App URL."); return; }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="loader"></div>';
+            
+            const formData = {
+                workerId: document.getElementById('workerId').value,
+                name: document.getElementById('name').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                photoData: base64Image,
+                photoName: fileName
+            };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    // Generate Receipt Image
+                    generateReceipt(data.refId, formData.name, formData.category, formData.description, base64Image);
+                    
+                    form.classList.add('hidden');
+                    document.querySelector('.bg-slate-900').classList.add('hidden'); // Hide header
+                    document.getElementById('successMessage').classList.remove('hidden');
+                } else { throw new Error(data.error); }
+            })
+            .catch(err => {
+                alert("Error: " + err.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Report <i class="fa-solid fa-paper-plane"></i>';
+            });
+        });
+
+        // 🖼️ RECEIPT GENERATION LOGIC
+        function generateReceipt(refId, name, category, description, photoBase64) {
+            const canvas = document.getElementById('receiptCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 1. Background
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 600, 800);
+            
+            // 2. Header
+            ctx.fillStyle = "#0f172a"; // Slate 900
+            ctx.fillRect(0, 0, 600, 120);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 32px Arial";
+            ctx.fillText("COMPLAINT FILED", 30, 70);
+            
+            // 3. Ticket Details
+            ctx.fillStyle = "#333333";
+            ctx.font = "bold 20px Arial";
+            ctx.fillText("Complaint No:", 30, 160);
+            ctx.font = "20px Arial";
+            ctx.fillText(refId, 200, 160);
+            
+            ctx.font = "bold 20px Arial";
+            ctx.fillText("Date:", 30, 200);
+            ctx.font = "20px Arial";
+            ctx.fillText(new Date().toLocaleDateString(), 200, 200);
+
+            ctx.font = "bold 20px Arial";
+            ctx.fillText("Worker:", 30, 240);
+            ctx.font = "20px Arial";
+            ctx.fillText(name, 200, 240);
+
+            ctx.font = "bold 20px Arial";
+            ctx.fillText("Category:", 30, 280);
+            ctx.fillStyle = "#dc2626"; // Red for category
+            ctx.fillText(category, 200, 280);
+
+            // 4. Description Area
+            ctx.fillStyle = "#f1f5f9"; // Light gray box
+            ctx.fillRect(30, 310, 540, 100);
+            ctx.fillStyle = "#000000";
+            ctx.font = "16px Arial";
+            wrapText(ctx, description, 45, 340, 510, 24);
+
+            // 5. Evidence Photo
+            ctx.fillStyle = "#000000";
+            ctx.font = "bold 18px Arial";
+            ctx.fillText("ATTACHED EVIDENCE:", 30, 450);
+
+            if (photoBase64) {
+                const img = new Image();
+                img.onload = function() {
+                    // Draw image keeping aspect ratio, max height 300px
+                    const scale = Math.min(540 / img.width, 300 / img.height);
+                    const w = img.width * scale;
+                    const h = img.height * scale;
+                    ctx.drawImage(img, 30, 470, w, h);
+                    finalizeReceipt();
+                };
+                img.src = photoBase64;
+            } else {
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "italic 18px Arial";
+                ctx.fillText("(No photo provided)", 30, 480);
+                finalizeReceipt();
+            }
+        }
+
+        function finalizeReceipt() {
+            const canvas = document.getElementById('receiptCanvas');
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            document.getElementById('generatedReceipt').src = dataUrl;
+            document.getElementById('downloadLink').href = dataUrl;
+        }
+
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let lineCount = 0;
+            for(let n = 0; n < words.length; n++) {
+                if (lineCount >= 3) { // Max 3 lines
+                    line += "...";
+                    break; 
+                }
+                const testLine = line + words[n] + ' ';
+                const metrics = context.measureText(testLine);
+                if (metrics.width > maxWidth && n > 0) {
+                    context.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                    lineCount++;
+                } else {
+                    line = testLine;
+                }
+            }
+            context.fillText(line, x, y);
+        }
+    </script>
+</body>
+</html>
