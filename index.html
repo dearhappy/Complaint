@@ -47,19 +47,19 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="text-xs font-semibold text-slate-500 uppercase">श्रमिक आईडी (Worker ID)</label>
-                    <input type="text" id="workerId" required placeholder="उदाहरण W-102" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
+                    <input type="text" id="workerId" placeholder="उदाहरण W-102" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
                 </div>
                 <div class="space-y-1">
                     <label class="text-xs font-semibold text-slate-500 uppercase">आपका नाम</label>
-                    <input type="text" id="name" required placeholder="पूरा नाम" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
+                    <input type="text" id="name" placeholder="पूरा नाम" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-500 uppercase">समस्या की श्रेणी</label>
                 <div class="relative">
-                    <select id="category" required class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 appearance-none bg-white">
-                        <option value="" disabled selected>एक श्रेणी चुनें...</option>
+                    <select id="category" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 appearance-none bg-white">
+                        <option value="" selected>एक श्रेणी चुनें...</option>
                         <option value="सुरक्षा खतरा">⚠️ सुरक्षा खतरा (Safety Hazard)</option>
                         <option value="उपकरण खराबी">⚙️ उपकरण खराबी (Equipment Failure)</option>
                         <option value="वेतन / उपस्थिति">💰 वेतन / उपस्थिति (Payroll/Attendance)</option>
@@ -72,7 +72,7 @@
 
             <div class="space-y-1">
                 <label class="text-xs font-semibold text-slate-500 uppercase">विवरण (Description)</label>
-                <textarea id="description" required rows="3" placeholder="समस्या का विवरण लिखें..." class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 resize-none"></textarea>
+                <textarea id="description" rows="3" placeholder="समस्या का विवरण लिखें..." class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 resize-none"></textarea>
             </div>
 
             <div class="space-y-1">
@@ -230,19 +230,19 @@
             ctx.font = "bold 20px Arial";
             ctx.fillText("नाम:", 30, 240); // Name
             ctx.font = "20px Arial";
-            ctx.fillText(name, 200, 240);
+            ctx.fillText(name || "-", 200, 240); // Default to - if empty
 
             ctx.font = "bold 20px Arial";
             ctx.fillText("श्रेणी:", 30, 280); // Category
             ctx.fillStyle = "#dc2626"; // Red for category
-            ctx.fillText(category, 200, 280);
+            ctx.fillText(category || "-", 200, 280); // Default to - if empty
 
             // 4. Description Area
             ctx.fillStyle = "#f1f5f9"; // Light gray box
             ctx.fillRect(30, 310, 540, 100);
             ctx.fillStyle = "#000000";
             ctx.font = "16px Arial";
-            wrapText(ctx, description, 45, 340, 510, 24);
+            wrapText(ctx, description || "(कोई विवरण नहीं)", 45, 340, 510, 24); // Default text if empty
 
             // 5. Evidence Photo
             ctx.fillStyle = "#000000";
