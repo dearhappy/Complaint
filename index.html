@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Worker Issue Portal</title>
+    <title>श्रमिक समस्या पोर्टल</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -38,60 +38,60 @@
             <div class="absolute top-0 right-0 p-4 opacity-10">
                 <i class="fa-solid fa-hard-hat text-6xl"></i>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight">Report an Issue</h1>
-            <p class="text-slate-400 text-sm mt-1">Submit complaints & receive instant proof.</p>
+            <h1 class="text-2xl font-bold tracking-tight">शिकायत दर्ज करें</h1>
+            <p class="text-slate-400 text-sm mt-1">शिकायत भेजें और तुरंत रसीद प्राप्त करें।</p>
         </div>
 
         <!-- Form -->
         <form id="reportForm" class="p-6 space-y-5">
             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 uppercase">Worker ID</label>
-                    <input type="text" id="workerId" required placeholder="W-102" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
+                    <label class="text-xs font-semibold text-slate-500 uppercase">श्रमिक आईडी (Worker ID)</label>
+                    <input type="text" id="workerId" required placeholder="उदाहरण W-102" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-500 uppercase">Your Name</label>
-                    <input type="text" id="name" required placeholder="Full Name" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
+                    <label class="text-xs font-semibold text-slate-500 uppercase">आपका नाम</label>
+                    <input type="text" id="name" required placeholder="पूरा नाम" class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 transition-all">
                 </div>
             </div>
 
             <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 uppercase">Issue Category</label>
+                <label class="text-xs font-semibold text-slate-500 uppercase">समस्या की श्रेणी</label>
                 <div class="relative">
                     <select id="category" required class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 appearance-none bg-white">
-                        <option value="" disabled selected>Select a category...</option>
-                        <option value="Safety Hazard">⚠️ Safety Hazard</option>
-                        <option value="Equipment Failure">⚙️ Equipment Failure</option>
-                        <option value="Payroll/Attendance">💰 Payroll / Attendance</option>
-                        <option value="Interpersonal Conflict">👥 Interpersonal Conflict</option>
-                        <option value="Other">📝 Other</option>
+                        <option value="" disabled selected>एक श्रेणी चुनें...</option>
+                        <option value="सुरक्षा खतरा">⚠️ सुरक्षा खतरा (Safety Hazard)</option>
+                        <option value="उपकरण खराबी">⚙️ उपकरण खराबी (Equipment Failure)</option>
+                        <option value="वेतन / उपस्थिति">💰 वेतन / उपस्थिति (Payroll/Attendance)</option>
+                        <option value="आपसी विवाद">👥 आपसी विवाद (Conflict)</option>
+                        <option value="अन्य">📝 अन्य (Other)</option>
                     </select>
                     <div class="absolute right-4 top-3.5 text-slate-400 pointer-events-none"><i class="fa-solid fa-chevron-down"></i></div>
                 </div>
             </div>
 
             <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 uppercase">Description</label>
-                <textarea id="description" required rows="3" placeholder="Describe the issue..." class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 resize-none"></textarea>
+                <label class="text-xs font-semibold text-slate-500 uppercase">विवरण (Description)</label>
+                <textarea id="description" required rows="3" placeholder="समस्या का विवरण लिखें..." class="w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 resize-none"></textarea>
             </div>
 
             <div class="space-y-1">
-                <label class="text-xs font-semibold text-slate-500 uppercase">Photo Evidence</label>
+                <label class="text-xs font-semibold text-slate-500 uppercase">फोटो सबूत (Photo Evidence)</label>
                 <div class="file-upload-wrapper rounded-lg p-6 text-center cursor-pointer relative" id="dropZone">
                     <input type="file" id="photo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                     <div id="uploadPlaceholder">
                         <i class="fa-solid fa-camera text-2xl text-slate-300 mb-2"></i>
-                        <p class="text-sm text-slate-500">Tap to upload proof</p>
+                        <p class="text-sm text-slate-500">फोटो अपलोड करने के लिए टैप करें</p>
                     </div>
                     <div id="previewContainer" class="hidden flex-col items-center">
                         <img id="imagePreview" class="h-24 rounded-lg shadow-sm object-cover mb-2" src="" alt="Preview">
-                        <button type="button" id="removeBtn" class="text-xs text-red-500 font-bold z-20 relative">REMOVE</button>
+                        <button type="button" id="removeBtn" class="text-xs text-red-500 font-bold z-20 relative">हटाएं (REMOVE)</button>
                     </div>
                 </div>
             </div>
 
             <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-lg shadow-lg flex items-center justify-center gap-2 transition-all">
-                <span>Submit Report</span> <i class="fa-solid fa-paper-plane"></i>
+                <span>रिपोर्ट भेजें</span> <i class="fa-solid fa-paper-plane"></i>
             </button>
         </form>
 
@@ -100,8 +100,8 @@
             <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
                 <i class="fa-solid fa-check text-green-600"></i>
             </div>
-            <h2 class="text-xl font-bold text-slate-800 mb-1">Complaint Lodged</h2>
-            <p class="text-slate-500 text-sm mb-4">Save this receipt as proof.</p>
+            <h2 class="text-xl font-bold text-slate-800 mb-1">शिकायत दर्ज की गई</h2>
+            <p class="text-slate-500 text-sm mb-4">इस रसीद को सबूत के तौर पर सेव करें।</p>
             
             <!-- Receipt Container -->
             <div class="mb-4 shadow-lg border border-slate-200 rounded-lg overflow-hidden w-full max-w-xs">
@@ -109,10 +109,10 @@
             </div>
 
             <a id="downloadLink" href="#" download="Complaint-Receipt.jpg" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow mb-3 block">
-                Download Receipt <i class="fa-solid fa-download ml-2"></i>
+                रसीद डाउनलोड करें <i class="fa-solid fa-download ml-2"></i>
             </a>
             
-            <button onclick="location.reload()" class="text-slate-500 text-sm font-semibold hover:text-slate-700">Submit Another Issue</button>
+            <button onclick="location.reload()" class="text-slate-500 text-sm font-semibold hover:text-slate-700">दूसरी समस्या दर्ज करें</button>
         </div>
     </div>
 
@@ -195,7 +195,7 @@
             .catch(err => {
                 alert("Error: " + err.message);
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Submit Report <i class="fa-solid fa-paper-plane"></i>';
+                submitBtn.innerHTML = 'रिपोर्ट भेजें <i class="fa-solid fa-paper-plane"></i>';
             });
         });
 
@@ -213,27 +213,27 @@
             ctx.fillRect(0, 0, 600, 120);
             ctx.fillStyle = "#ffffff";
             ctx.font = "bold 32px Arial";
-            ctx.fillText("COMPLAINT FILED", 30, 70);
+            ctx.fillText("शिकायत दर्ज", 30, 70); // Complaint Filed
             
             // 3. Ticket Details
             ctx.fillStyle = "#333333";
             ctx.font = "bold 20px Arial";
-            ctx.fillText("Complaint No:", 30, 160);
+            ctx.fillText("शिकायत संख्या:", 30, 160); // Complaint No
             ctx.font = "20px Arial";
             ctx.fillText(refId, 200, 160);
             
             ctx.font = "bold 20px Arial";
-            ctx.fillText("Date:", 30, 200);
+            ctx.fillText("दिनांक:", 30, 200); // Date
             ctx.font = "20px Arial";
             ctx.fillText(new Date().toLocaleDateString(), 200, 200);
 
             ctx.font = "bold 20px Arial";
-            ctx.fillText("Worker:", 30, 240);
+            ctx.fillText("नाम:", 30, 240); // Name
             ctx.font = "20px Arial";
             ctx.fillText(name, 200, 240);
 
             ctx.font = "bold 20px Arial";
-            ctx.fillText("Category:", 30, 280);
+            ctx.fillText("श्रेणी:", 30, 280); // Category
             ctx.fillStyle = "#dc2626"; // Red for category
             ctx.fillText(category, 200, 280);
 
@@ -247,7 +247,7 @@
             // 5. Evidence Photo
             ctx.fillStyle = "#000000";
             ctx.font = "bold 18px Arial";
-            ctx.fillText("ATTACHED EVIDENCE:", 30, 450);
+            ctx.fillText("संलग्न सबूत (Evidence):", 30, 450);
 
             if (photoBase64) {
                 const img = new Image();
@@ -263,7 +263,7 @@
             } else {
                 ctx.fillStyle = "#94a3b8";
                 ctx.font = "italic 18px Arial";
-                ctx.fillText("(No photo provided)", 30, 480);
+                ctx.fillText("(कोई फोटो नहीं दी गई)", 30, 480);
                 finalizeReceipt();
             }
         }
